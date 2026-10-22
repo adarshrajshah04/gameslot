@@ -76,6 +76,18 @@ def login_view(request):
         
     return render(request, "login.html", )
 
+# layout view
+def layout_view(request):
+    user=request.user
+    
+    profile=Profile.objects.filter(user_id=user).first()
+    
+
+    context = {
+            "user": user,
+            "profile": profile,
+        }
+    return render(request,"layout.html",context)
 
 # dashboard view
 @decorators.login_required(login_url="login")
@@ -94,18 +106,6 @@ def dashboard_view(request):
     }
 
     return render(request, "dashboard.html", context)
-
-def layout_view(request):
-    user=request.user
-    
-    profile=Profile.objects.filter(user_id=user).first()
-    
-
-    context = {
-            "user": user,
-            "profile": profile,
-        }
-    return render(request,"layout.html",context)
 
 
 

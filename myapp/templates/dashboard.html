@@ -6,9 +6,58 @@
 {% endblock %}
 
 {% block css %}
-{% comment %} <link rel="stylesheet" href="{% static 'css/dashboard.css' %}"> {% endcomment %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 {% endblock %}
 
 {% block content %}
-    <h1>Dashboard</h1>
+    <div class="main-content">
+        {% comment %} welcome message {% endcomment %}
+        <div class='wlc'>
+            <h3 >Welcome <span class='name'>{{user.first_name}}</span></h3>
+            <p>Manage your tournament and booking</p>
+        </div>
+        {% comment %}  user profile data {% endcomment %}
+        <div class="user-info">
+            <div class="user-name-image">
+                <div id="image-border">
+                    {% comment %} user image {% endcomment %}
+                    <img src="{{profile.profile_image.url}}" alt="">
+                </div>
+                <div id="user-name">
+                    {% comment %} user name {% endcomment %}
+                    <h2>{{user.first_name}}</h2>
+                    <p>Age {{profile.age}}</p>
+                </div>
+
+            </div>
+            <button>Book Tournament</button>
+        </div>
+
+
+        {% comment %} user game data {% endcomment %}
+        <div class="game-main">
+            <div>
+                <p> Total slots</p>
+                <h2>0</h2>
+            </div>
+
+            <div>
+                <p>Active slots </p>
+                <h2>0</h2>
+            </div>
+
+            <div>
+                <p>Holiday Shifted</p>
+                <h2>0</h2>
+            </div>
+
+            <div>
+                <p> Cancelled</p>
+                <h2>0</h2>
+            </div>
+
+        </div>
+
+        
+    </div>
 {% endblock %}
