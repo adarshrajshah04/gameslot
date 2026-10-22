@@ -57,7 +57,201 @@
             </div>
 
         </div>
+    {% comment %} // calender data {% endcomment %}
+<section class="year-overview">
+    <div class="year-header">
+        <div>
+            <h3>Year Overview</h3>
+            
+        </div>
 
-        
+        <span id="calendarYear"></span>
     </div>
+
+    <div class="year-calendar" id="yearCalendar"></div>
+
+    <div class="calendar-legend">
+        <span>
+            <i class="legend-dot today-dot"></i>
+            Today
+        </span>
+
+        <span>
+            <i class="legend-dot festival-dot"></i>
+            Festival
+        </span>
+
+        <span>
+            <i class="legend-dot selected-dot"></i>
+            Selected
+        </span>
+    </div>
+</section>
+
+
+
+    </div>
+<script>
+    const yearCalendar = document.getElementById("yearCalendar");
+const calendarYear = document.getElementById("calendarYear");
+
+const currentYear = new Date().getFullYear();
+
+calendarYear.textContent = currentYear;
+
+const monthNames = [
+    "January", "February", "March",
+    "April", "May", "June",
+    "July", "August", "September",
+    "October", "November", "December"
+];
+
+const weekDays = [
+    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+];
+
+/*
+    Festival dates for 2026.
+    Add or update dates according to your region.
+*/
+
+const festivals2026 = {
+    "2026-01-26": "Republic Day",
+    "2026-03-04": "Holi",
+    "2026-03-21": "Eid al-Fitr (tentative)",
+    "2026-08-15": "Independence Day",
+    "2026-09-14": "Ganesh Chaturthi",
+    "2026-10-02": "Gandhi Jayanti",
+    "2026-10-20": "Dussehra",
+    "2026-11-08": "Diwali",
+    "2026-11-24": "Guru Nanak Jayanti",
+    "2026-12-25": "Christmas"
+};
+
+function createMonth(monthIndex) {
+    const monthCard = document.createElement("div");
+    monthCard.className = "month-card";
+
+    // Month heading
+    const heading = document.createElement("h4");
+    heading.textContent = monthNames[monthIndex];
+
+    monthCard.appendChild(heading);
+
+    // Days container
+    const daysGrid = document.createElement("div");
+    daysGrid.className = "days-grid";
+
+    // Weekday names
+    weekDays.forEach((weekDay) => {
+        const dayName = document.createElement("span");
+
+        dayName.className = "day-name";
+        dayName.textContent = weekDay;
+
+        daysGrid.appendChild(dayName);
+    });
+
+    // First weekday of the month
+    const firstDay = new Date(
+        currentYear,
+        monthIndex,
+        1
+    ).getDay();
+
+    // Total days in the month
+    const totalDays = new Date(
+        currentYear,
+        monthIndex + 1,
+        0
+    ).getDate();
+
+    // Empty spaces before day 1
+    for (let i = 0; i < firstDay; i++) {
+        const emptyDay = document.createElement("span");
+
+        emptyDay.className = "day empty";
+        emptyDay.setAttribute("aria-hidden", "true");
+
+        daysGrid.appendChild(emptyDay);
+    }
+
+    // Generate dates
+    for (let day = 1; day <= totalDays; day++) {
+        const dateCell = document.createElement("button");
+
+        dateCell.type = "button";
+        dateCell.className = "day";
+        dateCell.textContent = day;
+
+        // Create YYYY-MM-DD date key
+        const dateKey = [
+            currentYear,
+            String(monthIndex + 1).padStart(2, "0"),
+            String(day).padStart(2, "0")
+        ].join("-");
+
+        // Check if date is today
+        const today = new Date();
+
+        const isToday =
+            day === today.getDate() &&
+            monthIndex === today.getMonth() &&
+            currentYear === today.getFullYear();
+
+        if (isToday) {
+            dateCell.classList.add("today");
+            dateCell.title = "Today";
+            dateCell.setAttribute("aria-current", "date");
+        }
+
+        // Check if date is a festival
+        if (
+            currentYear === 2026 &&
+            festivals2026[dateKey]
+        ) {
+            dateCell.classList.add("festival");
+
+            dateCell.title = festivals2026[dateKey];
+
+            dateCell.setAttribute(
+                "aria-label",
+                `${day} ${monthNames[monthIndex]}: ${festivals2026[dateKey]}`
+            );
+        }
+
+        // Select date on click
+        dateCell.addEventListener("click", () => {
+            document
+                .querySelectorAll(".day.selected")
+                .forEach((selectedDay) => {
+                    selectedDay.classList.remove("selected");
+                });
+
+            dateCell.classList.add("selected");
+
+            const selectedDate = [
+                currentYear,
+                String(monthIndex + 1).padStart(2, "0"),
+                String(day).padStart(2, "0")
+            ].join("-");
+
+            console.log("Selected date:", selectedDate);
+
+            // Use selectedDate to load bookings or appointments.
+        });
+
+        daysGrid.appendChild(dateCell);
+    }
+
+    monthCard.appendChild(daysGrid);
+
+    return monthCard;
+}
+
+// Generate all 12 months
+for (let month = 0; month < 12; month++) {
+    yearCalendar.appendChild(createMonth(month));
+}
+</script>
 {% endblock %}
